@@ -1,0 +1,1 @@
+This project is for storing stock data periodically
