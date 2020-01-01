@@ -28,6 +28,9 @@ public class AVResponse {
 		this.metaData = metaData;
 	}
 
+	public String toString() {
+		return metaData.toString() +" \n" + avTimeSeries.toString();
+	}
 	
 	
 }

@@ -77,4 +77,13 @@ public class AVMetaDataDTO {
 		this.timezone = timezone;
 	}
 
+	public String toString() {
+		return "MetaData    : \n"+
+				"information   : "+information    +"\n" + 
+				"symbol        : "+symbol         +"\n" + 
+				"lastrefreshed : "+lastrefreshed  +"\n" + 
+				"interval:     : "+interval       +"\n" +
+				"outputsize:   : "+outputsize     +"\n" +
+				"timezone      : "+timezone       +"\n";
+	}
 }

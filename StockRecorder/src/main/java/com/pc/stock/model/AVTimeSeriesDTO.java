@@ -1,6 +1,7 @@
 package com.pc.stock.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,18 +10,23 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 public class AVTimeSeriesDTO {
 
-	private List<StockData> list;
-	
-	public List<StockData> getList() {
-		return list;
+	private Map<String, StockData> stockPrice;
+
+	public Map<String, StockData> getStockPrice() {
+		return stockPrice;
 	}
 
-	public void setList(List<StockData> list) {
-		this.list = list;
+
+
+	public void setStockPrice(Map<String, StockData> stockPrice) {
+		this.stockPrice = stockPrice;
 	}
 
 	public AVTimeSeriesDTO() {
-		list = new ArrayList<StockData>();
+		stockPrice = new HashMap<String, StockData>();
 	}
 	
+	public String toString() {
+		return "Time Series contains "+stockPrice.keySet().size() +" days stock prices";
+	}
 }
