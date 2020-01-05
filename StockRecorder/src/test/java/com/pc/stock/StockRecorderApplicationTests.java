@@ -1,6 +1,9 @@
 package com.pc.stock;
 
 import java.io.FileReader;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +16,9 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.resource.AbstractVersionStrategy;
 
 import com.google.gson.Gson;
@@ -21,7 +26,10 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.pc.stock.model.AVMetaDataDTO;
 import com.pc.stock.model.AVResponse;
 import com.pc.stock.model.AVTimeSeriesDTO;
+import com.pc.stock.model.Stock;
 import com.pc.stock.model.StockData;
+import com.pc.stock.model.repo.StockDataRepository;
+import com.pc.stock.model.repo.StockRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,6 +37,12 @@ class StockRecorderApplicationTests {
 
 	@Autowired
 	private MockMvc mvc;
+	
+	@Autowired
+	private StockRepository stockRepo;
+	
+	@Autowired
+	private StockDataRepository stockDataRepo;
 
 	@Test
 	void contextLoads() {
@@ -75,15 +89,15 @@ class StockRecorderApplicationTests {
 					for (Map.Entry<String, String> subchildEntry : childEntry.getValue().entrySet()) {
 						System.out.println("subchild = "+subchildEntry.getKey() + " : "+subchildEntry.getValue());
 						if(subchildEntry.getKey().contains("open"))
-							stockData.setOpeningPrice(subchildEntry.getValue());
+							stockData.setOpeningPrice(Double.parseDouble(subchildEntry.getValue()));
 						if(subchildEntry.getKey().contains("high"))
-							stockData.setTodayHigh(subchildEntry.getValue());
+							stockData.setTodayHigh(Double.parseDouble(subchildEntry.getValue()));
 						if(subchildEntry.getKey().contains("low"))
-							stockData.setTodayLow(subchildEntry.getValue());
+							stockData.setTodayLow(Double.parseDouble(subchildEntry.getValue()));
 						if(subchildEntry.getKey().contains("close"))
-							stockData.setClosingPrice(subchildEntry.getValue());
+							stockData.setClosingPrice(Double.parseDouble(subchildEntry.getValue()));
 						if(subchildEntry.getKey().contains("volume"))
-							stockData.setVolume(subchildEntry.getValue());
+							stockData.setVolume(Integer.parseInt(subchildEntry.getValue()));
 					}
 					avTimeSeries.getStockPrice().put(childEntry.getKey(), stockData);
 				}
@@ -92,5 +106,40 @@ class StockRecorderApplicationTests {
 
 		}
 		return avResponse;
+	}
+
+	@Test
+	@Transactional
+	@Rollback(false)
+	void TestStockRepo() {
+		/*
+		 * Stock in = new Stock(); in.setSymbol("HDFC"); in.setDescription("Test");
+		 * in.setStockExchange("NYS"); stockRepo.save(in);
+		 */
+		
+		Stock stock = stockRepo.getOne(1);
+		System.out.println("Stock = "+stock);
+
+		Stock stock1 = stockRepo.getOne(3);
+		System.out.println("Stock = "+stock1);
+		
+		
+		StockData stockData = new StockData();
+		stockData.setStock(stock);
+		stockData.setClosingPrice(10.00);
+		stockData.setDate(Timestamp.valueOf(LocalDateTime.now()));
+		stockData.setTodayHigh(10.00);
+		stockData.setVolume(100);
+		stockDataRepo.save(stockData);
+		System.out.println("stockData = "+stockData);
+		
+		StockData stockData1 = new StockData();
+		stockData1.setStock(stock1);
+		stockData1.setClosingPrice(20.00);
+		stockData1.setDate(Timestamp.valueOf(LocalDateTime.now()));
+		stockData1.setTodayHigh(20.00);
+		stockData1.setVolume(200);
+		stockDataRepo.save(stockData1);
+		System.out.println("stockData = "+stockData1);
 	}
 }
