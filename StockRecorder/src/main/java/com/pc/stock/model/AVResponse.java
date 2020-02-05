@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pc.stock.model.dto.AVMetaDataDTO;
+import com.pc.stock.model.dto.AVTimeSeriesDTO;
 
 public class AVResponse {
 	AVMetaDataDTO metaData;

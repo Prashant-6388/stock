@@ -1,0 +1,7 @@
+TODO:
+ StockData : 
+ - Build Basic UI
+ - 
+ 
+ NEWS:
+ 

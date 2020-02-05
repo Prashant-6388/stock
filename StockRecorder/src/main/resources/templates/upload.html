@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	
+</head>
+<body>
+
+	<div class="container mt-3">
+		<h2>Stock Configuration</h2>
+
+		<div th:style="${#strings.contains({result},'successfully')} ? 'color: yellowgreen' : 'color: red'" >
+			<b><p th:text="${result}" /></b>
+		</div>
+		<form method="post" action="/upload" enctype="multipart/form-data" 
+				th:object="${configForm}" name="uploadConfig">
+			<select name="templateName">
+                         <option value=""> -- </option>
+                         <option th:each="template : ${templates}"
+                            th:value="${template.configName}"
+                            th:utext="${template.configName}"/>
+            </select> 
+            
+            
+			<p th:text="${message}" />
+			<div class="custom-file mb-3">
+				<input type="file" class="custom-file-input" id="customFile" name="file"> 
+			<label class="custom-file-label" for="customFile">Choose file</label>
+			</div>
+			<input type="submit" name="submit"> Submit </input>
+		</form>
+	</div>
+
+</body>
+<script>
+// Add the following code if you want the name of the file appear on select
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>
+</html>

@@ -1,6 +1,5 @@
 package com.pc.stock.model;
 
-
 import java.sql.Timestamp;
 import java.time.LocalTime;
 
@@ -16,42 +15,43 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="stockdata")
+@Table(name = "stockdata")
 public class StockData {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	int id;
-	
-	@Column(name="open")
+
+	@Column(name = "open")
 	private double openingPrice;
-	
-	@Column(name="high")
+
+	@Column(name = "high")
 	private double todayHigh;
-	
-	@Column(name="close")
+
+	@Column(name = "close")
 	private double closingPrice;
-	
-	@Column(name="low")
+
+	@Column(name = "low")
 	private double todayLow;
 
-	@Column(name="volumn")
+	@Column(name = "volumn")
 	private int volume;
 
-	@Column(name="date")
+	@Column(name = "date")
 	private Timestamp date;
-		
+
+	@Column(name = "adjusted_close")
+	private double adjustedclose;
+
+	@Column(name = "dividend_amount")
+	private double dividendamount;
+
+	@Column(name = "split_coefficient")
+	private double splitcoefficient;
+
 	@OneToOne
 	@JoinColumn(name = "symbol")
 	private Stock stock;
-
-//	public String getSymbol() {
-//		return symbol;
-//	}
-//
-//	public void setSymbol(String symbol) {
-//		this.symbol = symbol;
-//	}
 
 	public int getId() {
 		return id;
@@ -108,16 +108,40 @@ public class StockData {
 	public void setDate(Timestamp date) {
 		this.date = date;
 	}
+	
+	public double getAdjustedclose() {
+		return adjustedclose;
+	}
 
-	
-	  public Stock getStock() { return stock; }
-	  
-	  public void setStock(Stock stock) { this.stock = stock; }
-	 
-	
+	public void setAdjustedclose(double adjustedclose) {
+		this.adjustedclose = adjustedclose;
+	}
+
+	public double getDividendamount() {
+		return dividendamount;
+	}
+
+	public void setDividendamount(double dividendamount) {
+		this.dividendamount = dividendamount;
+	}
+
+	public double getSplitcoefficient() {
+		return splitcoefficient;
+	}
+
+	public void setSplitcoefficient(double splitcoefficient) {
+		this.splitcoefficient = splitcoefficient;
+	}
+
+	public Stock getStock() {
+		return stock;
+	}
+
+	public void setStock(Stock stock) {
+		this.stock = stock;
+	}
+
 	public String toString() {
-		return "StockData = \n" +
-				"Stock = "+stock +" \n" +
-				"High = "+ todayHigh;
+		return "StockData = \n" + "Stock = " + stock + " \n" + "High = " + todayHigh;
 	}
 }

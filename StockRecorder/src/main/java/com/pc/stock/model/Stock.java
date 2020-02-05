@@ -1,57 +1,40 @@
 package com.pc.stock.model;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="stock")
-public class Stock implements Serializable{
+public class Stock implements Serializable, Cloneable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@Column(name="symbol", unique = true)
-//	@OneToMany
-//	@JoinColumn(name="symbol")
 	private	String symbol;
-	
-//	public Set<StockData> getSymbol() {
-//		return symbol;
-//	}
-//	public void setSymbol(Set<StockData> symbol) {
-//		this.symbol = symbol;
-//	}
 
 	@Column(name = "description")
 	private String description;
 	
 	@Column(name="stock_exchange")
 	private String stockExchange;
-//	
-//	@OneToMany
-//	@JoinColumn(name="symbol")
-//	private List<StockData> stockData;
-//	
-//	public Set<StockData> getStockData() {
-//		return stockData;
-//	}
-//	public void setStockData(Set<StockData> stockData) {
-//		this.stockData = stockData;
-//	}
-//	
 	
+	public Stock() {
+	}
+	
+	public Stock(String symbol, String description, String stockExchange) {
+		this.symbol = symbol;
+		this.description = description;
+		this.stockExchange = stockExchange;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -75,6 +58,15 @@ public class Stock implements Serializable{
 	}
 	public void setStockExchange(String stockExchange) {
 		this.stockExchange = stockExchange;
+	}
+	
+	public Stock clone() {
+		try {
+			return (Stock)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public String toString() {

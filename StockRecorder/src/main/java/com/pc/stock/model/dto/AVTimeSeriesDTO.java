@@ -1,4 +1,4 @@
-package com.pc.stock.model;
+package com.pc.stock.model.dto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.pc.stock.model.StockData;
 
 
 public class AVTimeSeriesDTO {
