@@ -1,6 +1,7 @@
 package com.pc.stock.service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Service;
 import com.pc.stock.constant.AVConstants;
 import com.pc.stock.enums.Validation;
 import com.pc.stock.model.AVResponse;
+import com.pc.stock.model.RequestLog;
 import com.pc.stock.model.Stock;
 import com.pc.stock.model.StockData;
 import com.pc.stock.model.Template;
 import com.pc.stock.model.dto.AVMetaDataDTO;
 import com.pc.stock.model.dto.AVRequest;
 import com.pc.stock.model.dto.AVTimeSeriesDTO;
+import com.pc.stock.model.repo.RequestLogRepository;
 import com.pc.stock.model.repo.StockDataRepository;
 import com.pc.stock.model.repo.StockRepository;
 import com.pc.stock.model.repo.TemplateRepository;
@@ -39,6 +42,9 @@ public class AVService {
 
 	@Autowired
 	private StockRepository stockRepository;
+	
+	@Autowired
+	private RequestLogRepository requestLogRepository;
 
 	public static final Logger logger = LoggerFactory.getLogger(AVService.class);
 
@@ -215,5 +221,9 @@ public class AVService {
 			symbol = avMetaData.getSymbol();
 		}
 		return new Stock(symbol, description, stockExchange);
+	}
+
+	public void updateLastRequestSent() {
+		requestLogRepository.save(new RequestLog("AVRequest",LocalDateTime.now()));
 	}
 }

@@ -31,6 +31,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.pc.stock.constant.AVConstants;
 import com.pc.stock.enums.Frequency;
 import com.pc.stock.enums.Function;
+import com.pc.stock.enums.NewsCategory;
 import com.pc.stock.enums.OutputSize;
 import com.pc.stock.model.AVResponse;
 import com.pc.stock.model.News;
@@ -40,6 +41,7 @@ import com.pc.stock.model.Template;
 import com.pc.stock.model.dto.AVMetaDataDTO;
 import com.pc.stock.model.dto.AVRequest;
 import com.pc.stock.model.dto.AVTimeSeriesDTO;
+import com.pc.stock.model.dto.NewsRequestDTO;
 import com.pc.stock.model.dto.NewsResponse;
 import com.pc.stock.model.dto.NewsResponse.Article;
 import com.pc.stock.model.repo.NewsRepository;
@@ -74,7 +76,8 @@ class StockRecorderApplicationTests {
 	@Autowired
 	NewsRepository newsRepository;
 	
-	private static final String APIKEY = "NH0JRAHL2FB49D8K";
+	private static final String AV_APIKEY = "NH0JRAHL2FB49D8K";
+	private static final String NEWS_APIKEY = "226075c95fd74daba9736c25c911666c";
 
 //	@Autowired
 //	private AVTimeSeriesFetcher scheduler;
@@ -180,9 +183,9 @@ class StockRecorderApplicationTests {
 	
 	@Test
 	public void testXsteamToXML() {
-		AVRequest inputHDFC = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"NSE:HDFC", null, null, "json", null, APIKEY);
-		AVRequest inputAxis = new AVRequest(Function.TIME_SERIES_DAILY_ADJUSTED.toString(),"NSE:AXIS", null, null, "json", null, APIKEY);
-		AVRequest inputRel = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"MSFT", null, null, "json", null, APIKEY);
+		AVRequest inputHDFC = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"NSE:HDFC", null, null, "json", null, AV_APIKEY);
+		AVRequest inputAxis = new AVRequest(Function.TIME_SERIES_DAILY_ADJUSTED.toString(),"NSE:AXIS", null, null, "json", null, AV_APIKEY);
+		AVRequest inputRel = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"MSFT", null, null, "json", null, AV_APIKEY);
 		
 		List<AVRequest> inputs = Lists.newArrayList(inputHDFC, inputAxis, inputRel);
 		System.out.println("inputs = "+inputs);
@@ -194,9 +197,9 @@ class StockRecorderApplicationTests {
 	
 	@Test
 	public void testXsteamFromXML() {
-		AVRequest inputHDFC = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"NSE:HDFC", null, null, "json", null, APIKEY);
-		AVRequest inputAxis = new AVRequest(Function.TIME_SERIES_DAILY_ADJUSTED.toString(),"NSE:AXIS", null, null, "json", null, APIKEY);
-		AVRequest inputRel = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"MSFT", null, null, "json", null, APIKEY);
+		AVRequest inputHDFC = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"NSE:HDFC", null, null, "json", null, AV_APIKEY);
+		AVRequest inputAxis = new AVRequest(Function.TIME_SERIES_DAILY_ADJUSTED.toString(),"NSE:AXIS", null, null, "json", null, AV_APIKEY);
+		AVRequest inputRel = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"MSFT", null, null, "json", null, AV_APIKEY);
 		
 		List<AVRequest> inputs = Lists.newArrayList(inputHDFC, inputAxis, inputRel);
 		System.out.println("inputs = "+inputs);
@@ -217,9 +220,9 @@ class StockRecorderApplicationTests {
 	@Transactional
 	@Rollback(false)
 	public void blobRepoTest() {
-		AVRequest inputHDFC = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"NSE:HDFC", null, null, "json", null, APIKEY);
-		AVRequest inputAxis = new AVRequest(Function.TIME_SERIES_DAILY_ADJUSTED.toString(),"NSE:AXIS", null, null, "json", null, APIKEY);
-		AVRequest inputRel = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"MSFT", null, null, "json", null, APIKEY);
+		AVRequest inputHDFC = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"NSE:HDFC", null, null, "json", null, AV_APIKEY);
+		AVRequest inputAxis = new AVRequest(Function.TIME_SERIES_DAILY_ADJUSTED.toString(),"NSE:AXIS", null, null, "json", null, AV_APIKEY);
+		AVRequest inputRel = new AVRequest(Function.TIME_SERIES_DAILY.toString(),"MSFT", null, null, "json", null, AV_APIKEY);
 		
 		List<AVRequest> inputs = Lists.newArrayList(inputHDFC, inputAxis, inputRel);
 		System.out.println("inputs = "+inputs);
@@ -293,7 +296,7 @@ class StockRecorderApplicationTests {
 	
 	@Test
 	public void testRequestValidation() {
-		AVRequest request = new AVRequest("TIME_SERIES_DAILY", "HDFC", null, null, "json", null, APIKEY);
+		AVRequest request = new AVRequest("TIME_SERIES_DAILY", "HDFC", null, null, "json", null, AV_APIKEY);
 		StringBuilder url = new StringBuilder(AVConstants.AVREQUSET_BASE_URL);
 		boolean isValidRequest = avService.validateAndBuildRequestURL(request,url);
 	}
@@ -330,5 +333,31 @@ class StockRecorderApplicationTests {
 		news.setUrl(null);
 		
 		newsRepository.save(news);
+	}
+	
+	@Test
+	public void blobRepoNewsTest() {
+		NewsRequestDTO inputHDFC = new NewsRequestDTO("HDFC", NEWS_APIKEY); inputHDFC.setSource("source=CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); inputHDFC.setCountry("in");
+		NewsRequestDTO inputAXIS = new NewsRequestDTO("AXIS", NEWS_APIKEY); inputAXIS.setSource("source=CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); inputHDFC.setCountry("in");
+		NewsRequestDTO inputReliance = new NewsRequestDTO("REL", NEWS_APIKEY); inputReliance.setSource("source=CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); inputHDFC.setCountry("in");
+		
+		
+		List<NewsRequestDTO> inputs = Lists.newArrayList(inputHDFC, inputAXIS, inputReliance);
+		System.out.println("inputs = "+inputs);
+		
+		XStream xStream = new XStream();
+		String inputXML = xStream.toXML(inputs);
+		System.out.println("inputXML :\n"+inputXML);
+		
+		Template template = templateRepository.findByConfigName("newsConfig");
+		if(template == null) {
+			template = new Template() ;
+			template.setConfigName("newsConfig");
+		}
+		
+		template.setConfig(inputXML.getBytes());
+		
+		templateRepository.save(template);
+		
 	}
 }

@@ -48,6 +48,6 @@ public class AVTimeSeriesFetcher {
 		} );
 		
 		boolean result = avService.updateStockData(responses);
-
+		avService.updateLastRequestSent();
 	}
 }

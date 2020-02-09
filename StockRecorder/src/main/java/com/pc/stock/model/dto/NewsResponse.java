@@ -7,6 +7,7 @@ public class NewsResponse {
 	private String status;
 	private String totalResults;
 	private List<Article> articles;
+	private String searchWord;
 	
 	public String getStatus() {
 		return status;
@@ -31,6 +32,16 @@ public class NewsResponse {
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
 	}
+
+	public String getSearchWord() {
+		return searchWord;
+	}
+
+	public void setSearchWord(String searchWord) {
+		this.searchWord = searchWord;
+	}
+
+
 
 	public class Article {
 		private Source source;

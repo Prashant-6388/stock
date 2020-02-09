@@ -21,6 +21,12 @@ public class NewsRequestDTO {
 	int pageSize;
 	int page;
 	String apiKey;
+	String source;
+	
+	public NewsRequestDTO(String keyword,String apiKey) {
+		this.keyword = keyword;
+		this.apiKey = apiKey;
+	}
 	
 	public String getCountry() {
 		return country;
@@ -105,6 +111,14 @@ public class NewsRequestDTO {
 	}
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 }

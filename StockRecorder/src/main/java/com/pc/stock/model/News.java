@@ -26,6 +26,7 @@ public class News {
 
 	String urlToImage;
 
+	String source;
 
 	public String getAuthor() {
 		return author;
@@ -73,6 +74,14 @@ public class News {
 
 	public void setPublistedAt(LocalDateTime publishedAt) {
 		this.publishedAt = publishedAt;
+	}
+	
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 	public static class NewsId implements Serializable {
