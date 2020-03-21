@@ -48,4 +48,9 @@ public class StockDataController {
 		
 		return "";
 	}
+	
+	@RequestMapping(value = "/index")
+	public String index() {
+		return "index";
+	}
 }

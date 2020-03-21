@@ -49,6 +49,7 @@ import com.pc.stock.model.repo.StockDataRepository;
 import com.pc.stock.model.repo.StockRepository;
 import com.pc.stock.model.repo.TemplateRepository;
 import com.pc.stock.scheduler.AVTimeSeriesFetcher;
+import com.pc.stock.scheduler.NewsFetcher;
 import com.pc.stock.service.AVResponseExtractor;
 import com.pc.stock.service.AVService;
 import com.thoughtworks.xstream.XStream;
@@ -79,6 +80,9 @@ class StockRecorderApplicationTests {
 	private static final String AV_APIKEY = "NH0JRAHL2FB49D8K";
 	private static final String NEWS_APIKEY = "226075c95fd74daba9736c25c911666c";
 
+	@Autowired
+	NewsFetcher newsFetcher;
+	
 //	@Autowired
 //	private AVTimeSeriesFetcher scheduler;
 	
@@ -337,11 +341,10 @@ class StockRecorderApplicationTests {
 	
 	@Test
 	public void blobRepoNewsTest() {
-		NewsRequestDTO inputHDFC = new NewsRequestDTO("HDFC", NEWS_APIKEY); inputHDFC.setSource("source=CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); inputHDFC.setCountry("in");
-		NewsRequestDTO inputAXIS = new NewsRequestDTO("AXIS", NEWS_APIKEY); inputAXIS.setSource("source=CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); inputHDFC.setCountry("in");
-		NewsRequestDTO inputReliance = new NewsRequestDTO("REL", NEWS_APIKEY); inputReliance.setSource("source=CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); inputHDFC.setCountry("in");
-		
-		
+		NewsRequestDTO inputHDFC = new NewsRequestDTO("HDFC", NEWS_APIKEY); inputHDFC.setSource("CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); //inputHDFC.setCountry("in");
+		NewsRequestDTO inputAXIS = new NewsRequestDTO("AXIS", NEWS_APIKEY); inputAXIS.setSource("CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news"); //inputHDFC.setCountry("in");
+		NewsRequestDTO inputReliance = new NewsRequestDTO("REL", NEWS_APIKEY); inputReliance.setSource("CNBC,the-times-of-india,Moneycontrol.com,TechCrunch,google-news");// inputHDFC.setCountry("in");
+			
 		List<NewsRequestDTO> inputs = Lists.newArrayList(inputHDFC, inputAXIS, inputReliance);
 		System.out.println("inputs = "+inputs);
 		
@@ -359,5 +362,11 @@ class StockRecorderApplicationTests {
 		
 		templateRepository.save(template);
 		
+	}
+	
+	@Test
+	@Rollback(true)
+	public void testNewsFetcher() {
+		newsFetcher.fetchLatestNews("HDFC");
 	}
 }

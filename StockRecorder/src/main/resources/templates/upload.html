@@ -12,41 +12,71 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-	
+<script src="https://code.jquery.com/jquery-1.10.2.js"
+	type="text/javascript"></script>
+
+
+
 </head>
 <body>
-
 	<div class="container mt-3">
 		<h2>Stock Configuration</h2>
 
-		<div th:style="${#strings.contains({result},'successfully')} ? 'color: yellowgreen' : 'color: red'" >
-			<b><p th:text="${result}" /></b>
-		</div>
-		<form method="post" action="/upload" enctype="multipart/form-data" 
-				th:object="${configForm}" name="uploadConfig">
-			<select name="templateName">
-                         <option value=""> -- </option>
-                         <option th:each="template : ${templates}"
-                            th:value="${template.configName}"
-                            th:utext="${template.configName}"/>
-            </select> 
-            
-            
+		<form method="post" action="/upload" enctype="multipart/form-data"
+			th:object="${configForm}" name="uploadConfig">
+			<select id="templateName" name="templateName" onchange="myFunction()">
+				<option value="">--</option>
+				<option th:each="template : ${templates}"
+					th:value="${template.configName}" th:utext="${template.configName}" />
+			</select>
+
 			<p th:text="${message}" />
 			<div class="custom-file mb-3">
-				<input type="file" class="custom-file-input" id="customFile" name="file"> 
-			<label class="custom-file-label" for="customFile">Choose file</label>
+				<input type="file" class="custom-file-input" id="customFile"
+					name="file"> <label class="custom-file-label"
+					for="customFile" style="width: 500px;">Choose file</label>
 			</div>
-			<input type="submit" name="submit"> Submit </input>
+			<input type="submit" name="submit" value="Upload" />
 		</form>
+		<br/>
+		<form method="post" action="/uploadConfigData" name="uploadConfigData"
+			id="configDataForm" disabled>
+
+			<label id="configName" name="configName"></label> <br />
+			<textarea id="configData" name="configData" style="height: 150px; width:550px" ></textarea>
+
+			<input type="submit" name="submit" value="Save" />
+		</form>
+		<div th:style="${response == 'SUCCESS' ? 'color:#61c161' : 'color:red'}" >
+			<p th:text="${result}" />
+		</div>
 	</div>
 
+	<script>
+		function myFunction() {
+			var templateName = document.getElementById("templateName").value;
+			console.log("you selected "+templateName);
+			$("#configName").text=templateName;
+			$.ajax({
+	            url: "./getTemplateData?templateName="+templateName,      
+	            success: function (data) {
+	                $("#configData").val(data);
+	                $("#configName").text(templateName);
+	                $("#configDataForm").prop('disabled', false);
+	            }
+	        });
+		}
+		
+
+		$(".custom-file-input").on(
+				"change",
+				function() {
+					var fileName = $(this).val().split("\\").pop();
+					$(this).siblings(".custom-file-label").addClass("selected")
+							.html(fileName);
+				});
+	</script>
+
 </body>
-<script>
-// Add the following code if you want the name of the file appear on select
-$(".custom-file-input").on("change", function() {
-  var fileName = $(this).val().split("\\").pop();
-  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-});
-</script>
+
 </html>

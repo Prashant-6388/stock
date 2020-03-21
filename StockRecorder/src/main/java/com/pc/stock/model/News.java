@@ -7,27 +7,34 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Lob;
 
 @Entity
 @IdClass(value = News.NewsId.class)
 public class News {
-	@Id
-	String author;
+	
 
 	@Id
-	String title;
+	private String title;
 
 	@Id
-	LocalDateTime publishedAt;
+	private LocalDateTime publishedAt;
 
-	String description;
+	private String author;
+	
+	private String description;
 
-	String url;
+	private String url;
 
-	String urlToImage;
+	private String urlToImage;
 
-	String source;
+	private String source;
 
+	@Lob
+	private String content;
+	
+	private String searchWord;
+	
 	public String getAuthor() {
 		return author;
 	}
@@ -83,9 +90,25 @@ public class News {
 	public void setSource(String source) {
 		this.source = source;
 	}
+	
+	
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getSearchWord() {
+		return searchWord;
+	}
+
+	public void setSearchWord(String searchWord) {
+		this.searchWord = searchWord;
+	}
 
 	public static class NewsId implements Serializable {
-		String author;
 		String title;
 		LocalDateTime publishedAt;
 		
@@ -93,18 +116,9 @@ public class News {
 			super();
 		}
 		
-		public NewsId(String author, String title, LocalDateTime publishedAt) {
-			this.author = author;
+		public NewsId(String title, LocalDateTime publishedAt) {
 			this.title = title;
 			this.publishedAt = publishedAt;
-		}
-
-		public String getAuthor() {
-			return author;
-		}
-
-		public void setAuthor(String author) {
-			this.author = author;
 		}
 
 		public String getTitle() {
@@ -135,7 +149,7 @@ public class News {
 
 			NewsId that = (NewsId) object;
 
-			if (Objects.equals(getAuthor(), that.author) && Objects.equals(getTitle(), that.title)
+			if (Objects.equals(getTitle(), that.title)
 					&& Objects.equals(getPublishedAt(), that.publishedAt))
 				return true;
 			else
@@ -144,7 +158,7 @@ public class News {
 		
 		@Override
 		public int hashCode() {
-			return Objects.hash(getAuthor(), getTitle(), getPublishedAt());
+			return Objects.hash(getTitle(), getPublishedAt());
 		}
 
 	}

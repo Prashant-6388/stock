@@ -1,8 +1,10 @@
 package com.pc.stock.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
@@ -46,25 +48,25 @@ public class NewsService {
 			urlBuilder.append("apiKey=" + newsRequestDto.getApiKey());
 
 		if (newsRequestDto.getCategory() != null)
-			urlBuilder.append("category=" + newsRequestDto.getCategory().toString());
+			urlBuilder.append("&category=" + newsRequestDto.getCategory().toString());
 
 		if (newsRequestDto.getKeywordInTitle() != null && !newsRequestDto.getKeywordInTitle().isEmpty())
-			urlBuilder.append("qInTitle=" + newsRequestDto.getKeywordInTitle());
+			urlBuilder.append("&qInTitle=" + newsRequestDto.getKeywordInTitle());
 
 		if (newsRequestDto.getKeyword() != null && !newsRequestDto.getKeyword().isEmpty())
-			urlBuilder.append("q=" + newsRequestDto.getKeyword());
+			urlBuilder.append("&q=" + newsRequestDto.getKeyword());
 
 		if (newsRequestDto.getFrom() != null)
-			urlBuilder.append("from=" + newsRequestDto.getFrom());
+			urlBuilder.append("&from=" + newsRequestDto.getFrom());
 
 		if (newsRequestDto.getCountry() != null && !newsRequestDto.getCountry().isEmpty())
-			urlBuilder.append("country=" + newsRequestDto.getCountry());
+			urlBuilder.append("&country=" + newsRequestDto.getCountry());
 
 		if (newsRequestDto.getPageSize() != 0)
-			urlBuilder.append("pageSize=" + newsRequestDto.getPageSize());
+			urlBuilder.append("&pageSize=" + newsRequestDto.getPageSize());
 
 		if (newsRequestDto.getSortBy() != null)
-			urlBuilder.append("sortBy" + newsRequestDto.getSortBy());
+			urlBuilder.append("&sortBy" + newsRequestDto.getSortBy());
 		
 		return urlBuilder.toString();
 	}
@@ -89,11 +91,15 @@ public class NewsService {
 			News news = new News();
 			news.setTitle(article.getTitle());
 			news.setAuthor(article.getAuthor());
-			news.setPublistedAt(LocalDateTime.parse(article.getPublishedAt()));
+			news.setPublistedAt(LocalDateTime.parse(article.getPublishedAt(),
+						DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'",Locale.ENGLISH))
+					);
 			news.setDescription(article.getDescription());
 			news.setSource(article.getSource().getName());
 			news.setUrl(article.getUrl());
 			news.setUrlToImage(article.getUrlToImage());
+			news.setContent(article.getContent());
+			news.setSearchWord(article.getSearchWord());
 			newsList.add(news);
 		}
 		try {
