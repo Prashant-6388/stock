@@ -28,26 +28,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.pc.model.stock.AVResponse;
+import com.pc.model.stock.News;
+import com.pc.model.stock.RequestLog;
+import com.pc.model.stock.RequestLogId;
+import com.pc.model.stock.Stock;
+import com.pc.model.stock.StockData;
+import com.pc.model.stock.Template;
+import com.pc.notification.service.PushNotificationService;
 import com.pc.stock.constant.AVConstants;
+import com.pc.stock.dto.AVMetaDataDTO;
+import com.pc.stock.dto.AVRequest;
+import com.pc.stock.dto.AVTimeSeriesDTO;
+import com.pc.stock.dto.NewsRequestDTO;
+import com.pc.stock.dto.NewsResponse;
+import com.pc.stock.dto.NewsResponse.Article;
 import com.pc.stock.enums.Frequency;
 import com.pc.stock.enums.Function;
 import com.pc.stock.enums.NewsCategory;
 import com.pc.stock.enums.OutputSize;
-import com.pc.stock.model.AVResponse;
-import com.pc.stock.model.News;
-import com.pc.stock.model.Stock;
-import com.pc.stock.model.StockData;
-import com.pc.stock.model.Template;
-import com.pc.stock.model.dto.AVMetaDataDTO;
-import com.pc.stock.model.dto.AVRequest;
-import com.pc.stock.model.dto.AVTimeSeriesDTO;
-import com.pc.stock.model.dto.NewsRequestDTO;
-import com.pc.stock.model.dto.NewsResponse;
-import com.pc.stock.model.dto.NewsResponse.Article;
-import com.pc.stock.model.repo.NewsRepository;
-import com.pc.stock.model.repo.StockDataRepository;
-import com.pc.stock.model.repo.StockRepository;
-import com.pc.stock.model.repo.TemplateRepository;
+import com.pc.stock.repo.NewsRepository;
+import com.pc.stock.repo.RequestLogRepository;
+import com.pc.stock.repo.StockDataRepository;
+import com.pc.stock.repo.StockRepository;
+import com.pc.stock.repo.TemplateRepository;
 import com.pc.stock.scheduler.AVTimeSeriesFetcher;
 import com.pc.stock.scheduler.NewsFetcher;
 import com.pc.stock.service.AVResponseExtractor;
@@ -72,10 +76,16 @@ class StockRecorderApplicationTests {
 	private TemplateRepository templateRepository;
 	
 	@Autowired
+	private RequestLogRepository requestLogRepository;
+	
+	@Autowired
 	AVService avService;
 	
 	@Autowired
 	NewsRepository newsRepository;
+	
+	@Autowired
+	PushNotificationService pushNotificationService;
 	
 	private static final String AV_APIKEY = "NH0JRAHL2FB49D8K";
 	private static final String NEWS_APIKEY = "226075c95fd74daba9736c25c911666c";
@@ -241,7 +251,7 @@ class StockRecorderApplicationTests {
 			template.setConfigName("inputConfig");
 		}
 		
-		template.setConfig(inputXML.getBytes());
+		template.setConfig(inputXML);
 		
 		templateRepository.save(template);
 		
@@ -284,7 +294,7 @@ class StockRecorderApplicationTests {
 			template = new Template();
 			template.setConfigName("TIME_SERIES_DAILY");
 		}
-		template.setConfig(inputXML.getBytes());
+		template.setConfig(inputXML);
 		templateRepository.save(template);
 	}
 	
@@ -358,15 +368,28 @@ class StockRecorderApplicationTests {
 			template.setConfigName("newsConfig");
 		}
 		
-		template.setConfig(inputXML.getBytes());
+		template.setConfig(inputXML);
 		
 		templateRepository.save(template);
 		
 	}
 	
 	@Test
-	@Rollback(true)
+	@Transactional
+	@Rollback(false)
 	public void testNewsFetcher() {
-		newsFetcher.fetchLatestNews("HDFC");
+		newsFetcher.fetchLatestNews();
+	}
+	
+	@Test
+	public void testRequestLogRepo() {
+		requestLogRepository.save(new RequestLog(new RequestLogId("NewsRequest", "Test1"), LocalDate.now()));
+		requestLogRepository.save(new RequestLog(new RequestLogId("NewsRequest", "Test2"), LocalDate.now()));
+		requestLogRepository.save(new RequestLog(new RequestLogId("NewsRequest", "Test3"), LocalDate.now()));
+	}
+	
+	@Test
+	public void testNotification() {
+		pushNotificationService.sendSamplePushNotification();
 	}
 }

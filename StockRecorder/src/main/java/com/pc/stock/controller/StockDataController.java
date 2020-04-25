@@ -8,19 +8,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.pc.model.stock.AVResponse;
+import com.pc.model.stock.News;
 import com.pc.stock.constant.AVConstants;
-import com.pc.stock.model.AVResponse;
-import com.pc.stock.model.dto.AVRequest;
+import com.pc.stock.dto.AVRequest;
 import com.pc.stock.service.AVResponseExtractor;
 import com.pc.stock.service.AVService;
+import com.pc.stock.service.NewsService;
 
-@RestController
+@Controller
 public class StockDataController {
 
 	@Autowired
@@ -28,6 +32,9 @@ public class StockDataController {
 
 	@Autowired 
 	AVService avService;
+	
+	@Autowired
+	NewsService newsService;
 	
 	private static final String REST_URL = "https://gturnquist-quoters.cfapps.io/api/random";
 	private static final String REST_URL1 = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo";
@@ -49,8 +56,15 @@ public class StockDataController {
 		return "";
 	}
 	
-	@RequestMapping(value = "/index")
+	@RequestMapping(value = "/")
 	public String index() {
 		return "index";
+	}
+	
+	@RequestMapping(value="/showNews")
+	public String showNews(Model model) {
+		List<News> newsList = newsService.getAllNews();
+		model.addAttribute("newsList", newsList);
+		return "showNews";
 	}
 }

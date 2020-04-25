@@ -19,10 +19,10 @@ import org.springframework.web.client.ResponseExtractor;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.pc.stock.model.AVResponse;
-import com.pc.stock.model.StockData;
-import com.pc.stock.model.dto.AVMetaDataDTO;
-import com.pc.stock.model.dto.AVTimeSeriesDTO;
+import com.pc.model.stock.AVResponse;
+import com.pc.model.stock.StockData;
+import com.pc.stock.dto.AVMetaDataDTO;
+import com.pc.stock.dto.AVTimeSeriesDTO;
 
 /**
  * @author Prashant

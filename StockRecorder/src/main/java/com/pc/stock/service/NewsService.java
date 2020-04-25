@@ -1,10 +1,12 @@
 package com.pc.stock.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
@@ -12,14 +14,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pc.stock.model.News;
-import com.pc.stock.model.RequestLog;
-import com.pc.stock.model.Template;
-import com.pc.stock.model.dto.NewsRequestDTO;
-import com.pc.stock.model.dto.NewsResponse.Article;
-import com.pc.stock.model.repo.NewsRepository;
-import com.pc.stock.model.repo.RequestLogRepository;
-import com.pc.stock.model.repo.TemplateRepository;
+import com.pc.model.stock.News;
+import com.pc.model.stock.RequestLog;
+import com.pc.model.stock.RequestLogId;
+import com.pc.model.stock.Template;
+import com.pc.stock.dto.NewsRequestDTO;
+import com.pc.stock.dto.NewsResponse.Article;
+import com.pc.stock.enums.RequestType;
+import com.pc.stock.repo.NewsRepository;
+import com.pc.stock.repo.RequestLogRepository;
+import com.pc.stock.repo.TemplateRepository;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 
@@ -37,10 +41,16 @@ public class NewsService {
 	
 	@Autowired
 	RequestLogRepository requestLogRepository;
-
+	
 	public String createRequestURL(NewsRequestDTO newsRequestDto) {
+		LocalDate fromDate = null;
+		RequestLogId requestId = new RequestLogId(RequestType.NEWSREQUEST.getRequestType(), newsRequestDto.getKeyword());
+		Optional<RequestLog> result = requestLogRepository.findById(requestId);
+		if(result != null && result.isPresent() )
+			fromDate = result.get().getLastRequestSent();
 		
 		StringBuilder urlBuilder = new StringBuilder(BASE_URL);
+
 		
 		if (newsRequestDto.getApiKey() == null || newsRequestDto.getApiKey().isEmpty())
 			return null;
@@ -56,9 +66,6 @@ public class NewsService {
 		if (newsRequestDto.getKeyword() != null && !newsRequestDto.getKeyword().isEmpty())
 			urlBuilder.append("&q=" + newsRequestDto.getKeyword());
 
-		if (newsRequestDto.getFrom() != null)
-			urlBuilder.append("&from=" + newsRequestDto.getFrom());
-
 		if (newsRequestDto.getCountry() != null && !newsRequestDto.getCountry().isEmpty())
 			urlBuilder.append("&country=" + newsRequestDto.getCountry());
 
@@ -68,6 +75,11 @@ public class NewsService {
 		if (newsRequestDto.getSortBy() != null)
 			urlBuilder.append("&sortBy" + newsRequestDto.getSortBy());
 		
+		if (fromDate != null)
+			urlBuilder.append("&from=" + fromDate);
+		else if(newsRequestDto.getFrom()!= null)
+			urlBuilder.append("&from=" + newsRequestDto.getFrom());
+		
 		return urlBuilder.toString();
 	}
 	
@@ -75,9 +87,10 @@ public class NewsService {
 		return templateRepository.findByConfigName(configName);
 	}
 	
-	public List<NewsRequestDTO> convertToNewsRequestDTO(byte[] config) {
+	public List<NewsRequestDTO> convertToNewsRequestDTO(String config) {
 		try {
 			XStream xstream = new XStream();
+			xstream.setClassLoader(Thread.currentThread().getContextClassLoader());
 			return (List<NewsRequestDTO>)xstream.fromXML(new String(config));
 		}catch(XStreamException ex) {
 			log.error("Unable to convert template config for NewsDto",ex);
@@ -85,7 +98,7 @@ public class NewsService {
 		return null;
 	}
 	
-	public void storeArticles(List<Article> articles) {
+	public void storeArticles(List<Article> articles, String searchword) {
 		List<News> newsList = new  ArrayList<>();
 		for(Article article : articles) {
 			News news = new News();
@@ -99,7 +112,7 @@ public class NewsService {
 			news.setUrl(article.getUrl());
 			news.setUrlToImage(article.getUrlToImage());
 			news.setContent(article.getContent());
-			news.setSearchWord(article.getSearchWord());
+			news.setSearchWord(searchword);
 			newsList.add(news);
 		}
 		try {
@@ -109,7 +122,9 @@ public class NewsService {
 		}
 	}
 	
-	public void updateLastRequestSent() {
-		requestLogRepository.save(new RequestLog("NewsRequest",LocalDateTime.now()));
+	
+	public List<News> getAllNews() {
+		return newsRepository.findAll();
 	}
+	
 }

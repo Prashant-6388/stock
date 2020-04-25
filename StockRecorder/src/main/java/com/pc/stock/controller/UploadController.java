@@ -27,9 +27,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import com.pc.stock.model.Template;
-import com.pc.stock.model.dto.ConfigUploadDTO;
-import com.pc.stock.model.repo.TemplateRepository;
+import com.pc.model.stock.Template;
+import com.pc.stock.dto.ConfigUploadDTO;
+import com.pc.stock.dto.UploadForm;
+import com.pc.stock.repo.TemplateRepository;
 import com.pc.stock.service.StockAppService;
 
 @Controller
@@ -105,8 +106,11 @@ public class UploadController {
 	 * "File upload Failed"); log.error("File upload failed..."); } return
 	 * "redirect:upload"; }
 	 */
-	@GetMapping("/uploadConfigData")
-	public String uploadConfigData(HttpServletRequest request, Model model) {
+	@PostMapping("/uploadConfigData")
+	public String uploadConfigData(HttpServletRequest request, Model model, @ModelAttribute UploadForm uploadForm) {
+		if(uploadForm != null && uploadForm.getConfigName()!=null ) {
+			stockAppService.storeTemplate(uploadForm.getConfigData(), uploadForm.getConfigName());
+		}			
 		List<Template> templates = stockAppService.getAllTemplates();
 		model.addAttribute("message", "File Upload");
 		model.addAttribute("templates", templates);

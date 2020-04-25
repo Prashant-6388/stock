@@ -5,6 +5,17 @@
 <title>Insert title here</title>
 </head>
 <body>
+
+	<div th:fragment="logout" class="logout"
+		sec:authorize="isAuthenticated()">
+		Logged in user: <span sec:authentication="name"></span> | Roles: <span
+			sec:authentication="principal.authorities"></span>
+		<div>
+			<form action="#" th:action="@{/logout}" method="post">
+				<input type="submit" value="Logout" />
+			</form>
+		</div>
+	</div>
 	<p>Select a new car from the list.</p>
 
 	<select id="mySelect" onchange="myFunction()">

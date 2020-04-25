@@ -42,7 +42,8 @@
 		<form method="post" action="/uploadConfigData" name="uploadConfigData"
 			id="configDataForm" disabled>
 
-			<label id="configName" name="configName"></label> <br />
+			<label id="configNameLabel" name="configNameLabel"></label> <br />
+			<input type="text" name="configName" id="configName" hidden></input>
 			<textarea id="configData" name="configData" style="height: 150px; width:550px" ></textarea>
 
 			<input type="submit" name="submit" value="Save" />
@@ -61,7 +62,8 @@
 	            url: "./getTemplateData?templateName="+templateName,      
 	            success: function (data) {
 	                $("#configData").val(data);
-	                $("#configName").text(templateName);
+	                $("#configNameLabel").text(templateName);
+	                $("#configName").val(templateName);
 	                $("#configDataForm").prop('disabled', false);
 	            }
 	        });

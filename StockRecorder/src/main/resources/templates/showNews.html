@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>News</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../css/app.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/fh-3.1.6/r-2.2.3/sc-2.0.1/datatables.min.css"/>
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/fh-3.1.6/r-2.2.3/sc-2.0.1/datatables.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Showing all news</h3>
+		<div>
+			<table id="paginatedTable"	class="ui celled table nowrap order-column" style="width:100%">
+				<thead>
+						<th>Keyword</th>
+						<th>Title</th>
+						<th>Publised At</th>
+						<th>Author</th>
+						<th>Description</th>
+						<th>URL</th>
+						<th>Image URL</th> 
+						<th>Source</th>
+						<th>Content</th>
+				</thead>
+				<tbody>
+					<tr th:each="news : ${newsList}">
+						<td th:text="${news?.searchWord}">Title</td>
+						<td th:text="${news?.title}">Title</td>
+						<td th:text="${news?.publishedAt}">Publised	At</td>                   
+						<td th:text="${news?.author}">Author</td>
+						<td th:text="${news?.description}">Description</td>
+						<td th:text="${news?.url}">URL</td>
+						<td th:text="${news?.urlToImage}">ImageURL</td>
+						<td th:text="${news?.source}">Source</td>
+						<td th:text="${news?.content}">Content</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<script>
+			$(document).ready(function() {
+			    $('#paginatedTable').DataTable( {
+			        "scrollY": 500,
+			        "scrollX": true,
+			        "fixedColumns": true,
+			        "autoWidth": false,
+					"columnDefs": [
+					  { "width": "10px", "targets": 0 },
+					  { "width": "40px", "targets": 1 },
+					  { "width": "80px", "targets": 2 },
+					  { "width": "70px", "targets": 3 },
+					  { "width": "70px", "targets": 4 },
+					  { "width": "70px", "targets": 5 },
+					  { "width": "70px", "targets": 6 },
+					  { "width": "70px", "targets": 7 },
+					  { "width": "70px", "targets": 8 }
+					]
+			    } );
+			} );
+		</script>
+</body>
+</html>

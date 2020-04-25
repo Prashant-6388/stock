@@ -1,25 +1,35 @@
 package com.pc.stock.service;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pc.stock.model.Template;
-import com.pc.stock.model.repo.TemplateRepository;
+import com.pc.model.stock.RequestLog;
+import com.pc.model.stock.RequestLogId;
+import com.pc.model.stock.Template;
+import com.pc.stock.repo.RequestLogRepository;
+import com.pc.stock.repo.TemplateRepository;
 
 @Service
 public class StockAppService {
 
+	Logger log = LoggerFactory.getLogger(StockAppService.class);
+	
 	@Autowired
 	TemplateRepository templateRepository;
+	
+	@Autowired
+	RequestLogRepository requestLogRepository;
 	
 	public List<Template> getAllTemplates(){
 		return templateRepository.findAll();
@@ -44,19 +54,22 @@ public class StockAppService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
         }catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
 	
 	public String storeTemplate(String content, String templateName) {
 		Template template = templateRepository.findByConfigName(templateName);
+		template.getConfig().getClass();
 		if(template == null)
 			return "Template "+templateName + " not found";
-		
-		template.setConfig(content.getBytes());
-		
+
+		template.setConfig(content);
 		templateRepository.save(template);
 		return "Template uploaded successfully";
+	}
+	
+	public void updateLastRequestSent(String requestType, String keyword) { //
+		requestLogRepository.save(new RequestLog(new RequestLogId(requestType, keyword), LocalDate.now()));
 	}
 }

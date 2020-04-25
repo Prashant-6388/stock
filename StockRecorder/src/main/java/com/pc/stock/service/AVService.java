@@ -13,20 +13,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pc.model.stock.AVResponse;
+import com.pc.model.stock.RequestLog;
+import com.pc.model.stock.Stock;
+import com.pc.model.stock.StockData;
+import com.pc.model.stock.Template;
 import com.pc.stock.constant.AVConstants;
+import com.pc.stock.dto.AVMetaDataDTO;
+import com.pc.stock.dto.AVRequest;
+import com.pc.stock.dto.AVTimeSeriesDTO;
 import com.pc.stock.enums.Validation;
-import com.pc.stock.model.AVResponse;
-import com.pc.stock.model.RequestLog;
-import com.pc.stock.model.Stock;
-import com.pc.stock.model.StockData;
-import com.pc.stock.model.Template;
-import com.pc.stock.model.dto.AVMetaDataDTO;
-import com.pc.stock.model.dto.AVRequest;
-import com.pc.stock.model.dto.AVTimeSeriesDTO;
-import com.pc.stock.model.repo.RequestLogRepository;
-import com.pc.stock.model.repo.StockDataRepository;
-import com.pc.stock.model.repo.StockRepository;
-import com.pc.stock.model.repo.TemplateRepository;
+import com.pc.stock.repo.RequestLogRepository;
+import com.pc.stock.repo.StockDataRepository;
+import com.pc.stock.repo.StockRepository;
+import com.pc.stock.repo.TemplateRepository;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.security.AnyTypePermission;
@@ -140,38 +140,38 @@ public class AVService {
 			return false;
 		}
 		
-		if (requestValidation.getFunction().equalsIgnoreCase(Validation.REQUIRED.toSting()))
+		if (requestValidation.getFunction() != null && requestValidation.getFunction().equalsIgnoreCase(Validation.REQUIRED.toSting()))
 			if(request.getFunction() == null) 
 				return false;
 			else
 				sb.append("&function="+request.getFunction());
 
-		if (requestValidation.getSymbol().equalsIgnoreCase(Validation.REQUIRED.toSting()))
+		if (requestValidation.getSymbol() != null && requestValidation.getSymbol().equalsIgnoreCase(Validation.REQUIRED.toSting()))
 				if(request.getSymbol() == null) 
 					return false;
 				else
 					sb.append("&symbol="+request.getSymbol());
 
-		if (requestValidation.getInterval().equalsIgnoreCase(Validation.REQUIRED.toSting()))
+		if (requestValidation.getInterval() != null && requestValidation.getInterval().equalsIgnoreCase(Validation.REQUIRED.toSting()))
 				if(request.getInterval() == null) 
 					return false;
 				else
 					sb.append("&interval="+request.getInterval());
 		
-		if (requestValidation.getDatatype().equalsIgnoreCase(Validation.REQUIRED.toSting()))
+		if (requestValidation.getDatatype() != null && requestValidation.getDatatype().equalsIgnoreCase(Validation.REQUIRED.toSting()))
 				if(request.getDatatype() == null)
 					return false;
 				else
 					sb.append("&datatype="+request.getDatatype());
 
-		if (requestValidation.getKeyword().equalsIgnoreCase(Validation.REQUIRED.toSting()))
+		if (requestValidation.getKeyword() != null && requestValidation.getKeyword().equalsIgnoreCase(Validation.REQUIRED.toSting()))
 				if(request.getKeyword() == null)
 					return false;
 				else
 					sb.append("&keyword="+request.getKeyword());
 		
 
-		if (requestValidation.getOutputSize().equalsIgnoreCase(Validation.REQUIRED.toSting()))
+		if (requestValidation.getSymbol() != null && requestValidation.getOutputSize().equalsIgnoreCase(Validation.REQUIRED.toSting()))
 				if(request.getOutputSize() == null)
 					return false;
 				else
@@ -223,7 +223,4 @@ public class AVService {
 		return new Stock(symbol, description, stockExchange);
 	}
 
-	public void updateLastRequestSent() {
-		requestLogRepository.save(new RequestLog("AVRequest",LocalDateTime.now()));
-	}
 }
